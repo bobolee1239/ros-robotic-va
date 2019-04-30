@@ -178,7 +178,7 @@ if __name__ == '__main__':
     while not q.is_set():
         try:
             #  enable to catch ROS topic callback fcn
-            rospy.spinOnce()
+            #  rospy.spin()
             #  wake up VA with a keyword
             if uca.wakeup('hello amber'):
                 logger.info('Wake up')
