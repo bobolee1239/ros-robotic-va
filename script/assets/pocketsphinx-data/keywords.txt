@@ -1,8 +1,0 @@
-respeaker /1e-30/
-alexa /1e-30/
-hello bob /1e-50/
-play music /1e-40/
-hello brian /1e-50/
-bagel /1e-30/
-hello amber /1e-70/
-amber /1e-20/

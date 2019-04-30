@@ -42,7 +42,7 @@ Congrats! You can develop in Python 3 now.
 
 ## Build Customized Keywords
 
-Configure `dictionary.txt` and `keyword.txt` in `script/assets/pocketsphinx-data/` directory
+Configure `dictionary.txt` and `keyword.txt` in `script/beamforming/assets/pocketsphinx-data` directory
 <ul>
 	<li>specific explanation
     <a href="https://github.com/respeaker/get_started_with_respeaker/issues/68">CLICK HERE</a>
