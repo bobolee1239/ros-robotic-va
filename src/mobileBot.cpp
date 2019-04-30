@@ -107,9 +107,9 @@ int main(int argc, char* argv[]) {
     geometry_msgs::Twist velMsg;
 
     ros::Rate loopRate(100.0);                  //  Unit: Hz
-    while (1) {
+    while (ros::ok()) {
         //  to be able to fire callback Fcn
-        nh.spinOnce();
+        ros::spinOnce();
         /*************************
          **  1. 2pi/60      = 0.1047197551
          **  2. 2pi/60/2    = 0.05235987756
