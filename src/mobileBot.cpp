@@ -1,9 +1,10 @@
 //  Copyright (c) 2019 Tsung-Han Lee
 /******************************************************************************
- ** FILE       : mobileBot.cpp
- ** AUTHOR     : Tsung-Han Brian Lee
- ** DESCRIPTION:
- ** LICENSE    : MIT
+ ** ROBOTIC VOICE ASSISTANCE :: VEHICLE CONTROL
+ ** ---------------------------------------------------------------------------
+ ** - AUTHOR      : Tsung-Han Brian Lee
+ ** - DESCRIPTION : Vehicle controller of robotic VA project.
+ ** - LICENSE     : MIT
  ** ---------------------------------------------------------------------------
  ** Permission is hereby granted, free of charge, to any person obtaining a
  ** copy of this software and associated documentation files (the "Software"),
@@ -36,8 +37,8 @@
 
 #include "hall_sensor_decode.h"   //  Decode hall sensor signal
 
-#define ROBOT_POSE_TOPIC    "/feedback_vel"
-#define COMMAND_TOPIC       "/cmd_vel"
+#define ROBOT_STATE_TOPIC    "/feedback_vel"
+#define COMMAND_TOPIC        "/cmd_vel"
 /********************* DEFINITION ***************************************/
 int  initHallSensors();
 int  initPWM();
@@ -100,12 +101,12 @@ int main(int argc, char* argv[]) {
 
     ros::NodeHandle nh;
 
-    ros::Publisher  pub = nh.advertise<geometry_msgs::Twist>(ROBOT_POSE_TOPIC, 10);
+    ros::Publisher  pub = nh.advertise<geometry_msgs::Twist>(ROBOT_STATE_TOPIC, 10);
     ros::Subscriber sub = nh.subscribe(COMMAND_TOPIC, 10, &commandHandler);
 
     geometry_msgs::Twist velMsg;
 
-    ros::Rate loopRate(100.0);          //  Unit: Hz
+    ros::Rate loopRate(100.0);                  //  Unit: Hz
     while (1) {
         //  to be able to fire callback Fcn
         nh.spinOnce();

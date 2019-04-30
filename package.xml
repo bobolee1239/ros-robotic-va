@@ -2,7 +2,7 @@
 <package format="2">
   <name>ros-robotic-va</name>
   <version>0.0.0</version>
-  <description>The ros-robotic-va package</description>
+  <description>Robotic VA project</description>
 
   <maintainer email="bobolee1239@gmail.com">
   	Tsung-Han Brian Lee

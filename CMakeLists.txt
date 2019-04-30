@@ -201,3 +201,6 @@ target_link_libraries(pwm wiringPi)
 
 add_executable(mobileBot src/mobileBot.cpp)
 target_link_libraries(mobileBot wiringPi ${catkin_LIBRARIES})
+
+add_executable(roboticVA_pos src/roboticVA_pos.cpp)
+target_link_libraries(roboticVA_pos ${catkin_LIBRARIES})

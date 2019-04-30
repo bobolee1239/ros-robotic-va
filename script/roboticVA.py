@@ -40,29 +40,47 @@ import time                                  # for sleep ...
 import boto3                                 # to send AJAX request to AWS LEX
 import numpy as np                           # science computation
 from scipy import signal                     # resamping signal
-import RPi.GPIO as GPIO                      # control GPIO pin on RPi3
+
+import rospy                                 # ROS node
+from geometry_msgs.msg import Point          # ROS built-in message type
+from nav_msgs.msg import Odometry            # ROS built-in message type
 
 if DEBUG:
     import sounddevice as sd                 # for debuggin sake
 
-# logger to display information with different levels
-logger = logging.getLogger('ROBOTIC_VA')
+class PlanarInfo(object):
+    def __init__(self, x = 0.0, y=0.0, th=0.0):
+        self.x  = x
+        self.y  = y
+        self.th = th
+    def move2(x, y, th=None):
+        self.x = x
+        self.y = y
+        if th:
+            self.th = th
 ##
-#   Init GPIO pins on RPi3
-#   * Do it in global scope so that callback function can check it out
+#   GLOBAL VARAIBLES TO BE SHARE FOR EACH CALLBACK
+#   ----------------------------------------------------------------------
+#   1. ROS Topics
+#   2. ROBOT POSE
+#   3. ROS PUBLISHER TO BE SHARE WITH UCA CALLBACK FCN
+#   ----------------------------------------------------------------------
 ##
-pwm1  = 18
-pwm2  = 13
-# setup GPIO
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(pwm1, GPIO.OUT)
-GPIO.setup(pwm2, GPIO.OUT)
+logger = logging.getLogger('ROBOTIC_VA')            # for verbosity
 
-p1 = GPIO.PWM(pwm1, 1000)  # BCM 18, Freq 1000Hz
-p2 = GPIO.PWM(pwm2, 1000)  # BCM 18, Freq 1000Hz
+ROBOT_POSE_TOPIC   = '/robot_pose'
+SUBGOAL_TOPIC      = '/subgoal_position'
 
-p1.start(0.5)
-p2.start(0.5)
+pub = rospy.Publisher(SUBGOAL_TOPIC, Point, queue_size=10)
+##
+#   POINT REPRESENTATION IN THE FOLLOWING
+#   ---------------------------------------------
+#   1. x, y =>  cardiasion coordinate
+#   2. z    =>  robot pose
+#   ---------------------------------------------
+##
+roboticVA_position = Point(0.0, 0.0, 0.0)
+subGoal            = Point(0.0, 0.0, 0.0)
 
 ##
 #   Callback Handler Fcn which will be fired after each SSL job is done!
@@ -77,30 +95,42 @@ p2.start(0.5)
 #   -----------------------------------------------------------------------
 ##
 def sslHandler(firer, direction, polar_angle):
+    # user interaction : LED & console
     pixel_ring.set_direction(direction)
     logger.info('In callback: src @ {:.2f}, @{:.2f}'.format(direction,
                  polar_angle))
-    # range of direction: -180 ~ 180
-    ## if direction > 180:
-    ##     direction -= 360
 
-    ## assert(direction < 180 and direction > 180, "direction range wrong")
+    command = Point(roboticVA_position.x,
+                    roboticVA_position.y,
+                    roboticVA_position.z + direction)
 
-    ## out1 = direction / 180 * 0.5 + 0.5
-    ## out2 = -direction / 180 * 0.5 + 0.5
+    # transform range from 0 ~ 360 -> -180 ~ 180
+    if command.z > 180:
+         command.z -= 360
+    
+    assert(command.z < 180 and command.z > 180, "direction range wrong")
 
-    ## p1.ChangeDutyCycle(out1 * 100)
-    ## p2.ChangeDutyCycle(out2 * 100)
+    # transform from degree to rad
+    command.z /= (0.01745329252)
 
-    if direction > 180:
-        out1 = (360 - direction) / 180
-        out2 = 0
-    else:
-        out2 = direction / 180
-        out1 = 0
+    # Publish command to ROS topic
+    pub.publish(command)
 
-    p1.ChangeDutyCycle(out1 * 80)
-    p2.ChangeDutyCycle(out2 * 80)
+
+##
+#   Callback Handler Fcn which will be fired when receive a ROS message
+#   ----------------------------------------------------------------------
+#     GOALS:
+#       1. Update Robot Pose
+#     ARGUEMNTS:
+#       1. recvMsg [nav_msgs::Odometry]
+#   -----------------------------------------------------------------------
+##
+def odometryHandler(loc):
+    # update robotic VA position
+    roboticVA_position = Point(loc.pose.pose.position.x,
+                               loc.pose.pose.position.y,
+                               loc.pose.pose.orientation.z)
 
 ##
 #   Playing audio back with specific sampling rate
@@ -113,11 +143,18 @@ def sslHandler(firer, direction, polar_angle):
 def playAudio(in_data, fs, effect=None):
     if DEBUG:
         sd.play(in_data, fs)
+    # [TODO] rendering binaural audio || publish to ROS topic
 
 
 if __name__ == '__main__':
     # setup logger level
     logging.basicConfig(level=logging.INFO)
+
+    ##
+    #   Init ROS Node : roboticVA
+    ##
+    rospy.init_node('roboticVA', anonymous=True)
+    rospy.Subscriber(ROBOT_POSE_TOPIC, Odometry, odometryHandler)
 
     ##
     #   Init Uniform Circular Array (UCA) for audio Input
@@ -140,6 +177,8 @@ if __name__ == '__main__':
     isFailed = False
     while not q.is_set():
         try:
+            #  enable to catch ROS topic callback fcn
+            rospy.spinOnce()
             #  wake up VA with a keyword
             if uca.wakeup('hello amber'):
                 logger.info('Wake up')
@@ -187,11 +226,9 @@ if __name__ == '__main__':
             logger.info('Quit')
             q.set()
             break
+        # not handling other exception
         except Exception as e:
             logger.warn(e)
-            p1.stop()
-            p2.stop()
-            GPIO.cleanup()
     uca.close()
 
     if not isFailed:
@@ -204,10 +241,3 @@ if __name__ == '__main__':
         for keys in response["slots"].keys():
             print("  * " + keys + ": " + response["slots"][keys])
         print("\n\n////////// Conversation END! //////////")
-
-##
-#    Free GPIO Resource
-##
-p1.stop()
-p2.stop()
-GPIO.cleanup()

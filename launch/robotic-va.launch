@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- motor control node -->
+  <node
+    name="mobileBot"
+    pkg="ros-robotic-va"
+    type="mobileBot"
+    output="screen"
+  />
+  <!-- robotic va main && microphone array signal processing -->
+  <node
+    name="roboticVA"
+    pkg="ros-robotic-va"
+    type="roboticVA"
+    output="screen"
+  />
+  <!-- calculate robotic va odometry -->
+  <node
+    name="roboticVA_pos"
+    pkg="ros-robotic-va"
+    type="roboticVA_pos"
+    output="screen"
+  />
+  <!-- vehicle motion control -->
+  <node
+    name="roboticVA_nav"
+    pkg="ros-robotic-va"
+    type="roboticVA_nav"
+  />
+</launch>
