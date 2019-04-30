@@ -2,6 +2,7 @@
 __AUTHOR__ : Tsung-Han Brian Lee
 
 ---
+
 ## Get Started
 Environment Setting
   * Operating System : `Ubuntu 16` | `Raspian Strench`, `ROS Kinetic` (not necessary)
@@ -17,6 +18,7 @@ $ echo 'SUBSYSTEM=="usb", MODE="0666"' | sudo tee -a /etc/udev/rules.d/60-usb.ru
 $ sudo udevadm control -R  # then re-plug the usb device
 ```
 ---
+
 ## Enable Python 3 on ROS Kinetic
 First, you need to install `catkin-tools` and `rospkg`.
 ```
@@ -30,6 +32,7 @@ Second, invoke Python3 interpreter at the beginning of python scripts.
 You can now develop in Python3 then.
 
 ---
+
 ## Build Customized Keywords
 Configure `dictionary.txt` and `keyword.txt`
 <ul>
@@ -40,6 +43,7 @@ Configure `dictionary.txt` and `keyword.txt`
 		<a href="https://raw.githubusercontent.com/respeaker/pocketsphinx-data/master/dictionary.txt">CLICK HERE</a>
   </li>
 </ul>
+
 ---
 
 ## REFERENCE
