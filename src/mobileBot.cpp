@@ -33,17 +33,19 @@
 #include <iomanip>
 #include "ros.h"
 #include "geometry_msgs/Twist.h"
-#include "ros/console.h"
+#include "ros/console.h"                //  To setup verbosity
 
 #include "hall_sensor_decode.h"
 
 /********************* DEFINITION ***************************************/
-int initHallSensors();
-int initPWM();
-int initTimerISR();
+int  initHallSensors();
+int  initPWM();
+int  initTimerISR();
 void timerISR(int signum);
+void commandHandler(const geometry_msgs::Twist& recvMsg);
 
 typedef volatile struct PIController {
+    volatile double refRPM;     //  reference rpm
     volatile double rpm;
     volatile double piOut;      //  output of PI controller
     volatile double err;        //  error
@@ -65,19 +67,22 @@ typedef volatile struct Vehicle {
 /********************* PARAMETERS ***************************************/
 const int leftPWM   =  1;     //  WiringPi  1 : BCM 18
 const int rightPWM  = 23;     //  WiringPi 23 : BCM 13
+const double Ts     = 0.01;   //  sampling interval
 
-PIController_t leftController  = {0.0, 0.0, 0.0, 0.0, 0.008, 0.02};
-PIController_t rightController = {0.0, 0.0, 0.0, 0.0, 0.008, 0.02};
+PIController_t leftController  = {0.0, 0.0, 0.0, 0.0, 0.0, 0.008, 0.02};
+PIController_t rightController = {0.0, 0.0, 0.0, 0.0, 0.0, 0.008, 0.02};
 
 Vehicle_t car = {0.0989, 0.2748, 0.0, 0.0, 0.0, 0.0};
-
-double leftRef  = -15.0;
-double rightRef = -30.0;
-double Ts       = 0.01;       // sampling interval
-
 /***********************************************************************/
 
 int main(int argc, char* argv[]) {
+    /* Init ROS node : navigator */
+    ros::init(argc, argv, "Navigator");
+
+    /* Setup ROS Verbosity Level */
+    if (ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug)) {
+        ros::console::notifyLoggerLevelsChanged();
+    }
     /* Setup wiringPi */
     if (wiringPiSetup() < 0) {
         std::cerr << "Unable to setup wiringPi: "
@@ -92,7 +97,17 @@ int main(int argc, char* argv[]) {
     initPWM();
     initTimerISR();
 
+    ros::NodeHandle nh;
+
+    ros::Publisher  pub = nh.advertise<geometry_msgs::Twist>(ROBOT_POSE_TOPIC, 10);
+    ros::Subscriber sub = nh.subscribe(COMMAND_TOPIC, 10, &commandHandler);
+
+    geometry_msgs::Twist velMsg;
+
+    ros::Rate loopRate(100.0);          //  Unit: Hz
     while (1) {
+        //  to be able to fire callback Fcn
+        nh.spinOnce();
         /*************************
          **  1. 2pi/60      = 0.1047197551
          **  2. 2pi/60/2    = 0.05235987756
@@ -101,15 +116,19 @@ int main(int argc, char* argv[]) {
                   * car.r * 0.05235987756;
         car.W = -car.r * (rightController.rpm - leftController.rpm)
                 / car.L * 0.1047197551;
-        //  [TODO] publish to ros topic
+
+        //  publish to ros topic
+        velMsg.linear.x   = car.V;
+        velMsg.angular.z  = car.W;
+
+        pub.publish(velMsg);
 
         /* output sensor */
-        std::cout << "l:" << std::fixed << std::setprecision(2)
-                  << leftController.rpm << " , ";
-        std::cout << "r:" << std::fixed << std::setprecision(2)
-                  << rightController.rpm << std::endl;
-        //  [TODO] looping in fixed rate
-        sleep(1);
+        ROS_DEBUG_STREAM("L: " << leftController.rpm << " | "
+                          << "R: " << rightController.rpm);
+
+        //  looping in fixed rate
+        loopRate.sleep();
     }
 
     /* release memory */
@@ -117,19 +136,25 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
+void commandHandler(const geometry_msgs::Twist& recvMsg) {
+    car.refV = recvMsg.linear.x;
+    car.refW = recvMsg.angular.z;
+}
+
 void timerISR(int signum) {
+    //  60.0 / 2pi = 9.549296586
+    leftController.refRPM  = (car.refV - car.L*car.refW/2.0)
+                              * 9.549296586 / car.r;
+    rightController.refRPM = (car.refV + car.L*car.refW/2.0)
+                              * 9.549296586 / car.r;
     /*********** MOTOR1 **********/
     // measure TODO... translate rpm correctly : gear ratio
     leftController.rpm = leftWheel->numStateChange * 1.04166;
     leftWheel->numStateChange = 0;
 
     /**************** PI Controller *******************/
-    leftController.err = leftRef - leftController.rpm;
+    leftController.err = leftController.refRPM - leftController.rpm;
     leftController.ierr += Ts*leftController.err;
-
-    std::cout << "err: " << leftController.err << std::endl;
-    std::cout << "kp: " << leftController.kp
-              << ", ki: " << leftController.ki << std::endl;
 
     // limit integration output
     if (leftController.ierr > 50.0) {
@@ -155,7 +180,7 @@ void timerISR(int signum) {
     rightWheel->numStateChange = 0;
 
     /**************** PI Controller *******************/
-    rightController.err = rightRef - rightController.rpm;
+    rightController.err = rightController.refRPM - rightController.rpm;
     rightController.ierr += Ts*rightController.err;
 
     // limit integration output
