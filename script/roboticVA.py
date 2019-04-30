@@ -108,7 +108,7 @@ def sslHandler(firer, direction, polar_angle):
     if command.z > 180:
          command.z -= 360
     
-    assert(command.z < 180 and command.z > 180, "direction range wrong")
+    assert (command.z < 180 and command.z > 180), "direction range wrong"
 
     # transform from degree to rad
     command.z /= (0.01745329252)
