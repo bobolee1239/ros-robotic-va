@@ -7,8 +7,8 @@ __LICENSE__ : MIT
 
 ## Get Started
 
-Environment Setting
-  * Operating System : `Ubuntu 16` | `Raspian Strench`, `ROS Kinetic` (not necessary)
+Environment
+  * Tested Operating System : `Ubuntu 16` | `Raspian Strench` | `ROS Kinetic`
   * Python Dependencies: `pyusb`, `webrtcvad`, and `Sphinx`
 
 Device Firmware (can be found in github/respeaker)
