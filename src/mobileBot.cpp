@@ -24,19 +24,20 @@
  ** THE SOFTWARE.
  ** ---------------------------------------------------------------------------
  ******************************************************************************/
-#include <errno.h>
-#include <unistd.h>
-#include <string.h>
-#include <signal.h>
-#include <sys/time.h>
-#include <iostream>
-#include <iomanip>
-#include "ros.h"
-#include "geometry_msgs/Twist.h"
-#include "ros/console.h"                //  To setup verbosity
+#include <errno.h>                //
+#include <unistd.h>               //  sleep
+#include <string.h>               //  memory operation
+#include <signal.h>               //  handle timer interrupt service routine
+#include <sys/time.h>             //  virtual timer real
+#include <iostream>               //  io
+#include "ros/ros.h"              //  ROS
+#include "geometry_msgs/Twist.h"  //  Twist message provided by ROS
+#include "ros/console.h"          //  To setup verbosity
 
-#include "hall_sensor_decode.h"
+#include "hall_sensor_decode.h"   //  Decode hall sensor signal
 
+#define ROBOT_POSE_TOPIC    "/feedback_vel"
+#define COMMAND_TOPIC       "/cmd_vel"
 /********************* DEFINITION ***************************************/
 int  initHallSensors();
 int  initPWM();
