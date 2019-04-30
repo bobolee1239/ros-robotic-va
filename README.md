@@ -1,10 +1,12 @@
 # ROS ROBOTIC VA PROJECT
+
 __AUTHOR__ : Tsung-Han Brian Lee <br />
 __LICENSE__ : MIT
 
 ---
 
 ## Get Started
+
 Environment Setting
   * Operating System : `Ubuntu 16` | `Raspian Strench`, `ROS Kinetic` (not necessary)
   * Python Dependencies: `pyusb`, `webrtcvad`, and `Sphinx`
@@ -20,22 +22,27 @@ $ sudo udevadm control -R  # then re-plug the usb device
 ```
 ---
 
-## Enable Python 3 on ROS Kinetic
+## Python 3 on ROS Kinetic
+
 First, you need to install `catkin-tools` and `rospkg`.
 ```
-$ pip3 install catkin-tools
-$ pip3 install rospkg
+$ pip3 install catkin-tools rospkg
 ```
-Second, invoke Python3 interpreter at the beginning of python scripts.
+or
+```
+$ python3 -m pip install catkin-tools rospkg
+```
+Second, invoke Python 3 interpreter at the beginning of Python scripts.
 ```
 1   #!/usr/bin/env python3
 ```
-You can now develop in Python3 then.
+Congrats! You can develop in Python 3 now.
 
 ---
 
 ## Build Customized Keywords
-Configure `dictionary.txt` and `keyword.txt`
+
+Configure `dictionary.txt` and `keyword.txt` in `script/assets/pocketsphinx-data/` directory
 <ul>
 	<li>specific explanation
     <a href="https://github.com/respeaker/get_started_with_respeaker/issues/68">CLICK HERE</a>
@@ -48,6 +55,7 @@ Configure `dictionary.txt` and `keyword.txt`
 ---
 
 ## REFERENCE
+
 __Python3 in ROS__
   1. https://www.cnblogs.com/h46incon/p/6207145.html
   2. https://github.com/OTL/cozmo_driver#super-hack-to-run-rospy-from-python3
