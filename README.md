@@ -15,14 +15,14 @@ Device Firmware (can be found in github/respeaker)
   * Respeaker 8 mics DFU (Device Firmware Upgrade)
   * Drivers for Raspberry Pi
 
-If you don't want to access USB device with root permission, you can add a udev `.rules` file to `/etc/udev/rules.d`
+To access USB device with root permission, you can add a udev `.rules` file to `/etc/udev/rules.d`
 ```
 $ echo 'SUBSYSTEM=="usb", MODE="0666"' | sudo tee -a /etc/udev/rules.d/60-usb.rules
 $ sudo udevadm control -R  # then re-plug the usb device
 ```
 ---
 
-## Python 3 on ROS Kinetic
+## Python 3 on ROS
 
 First, you need to install `catkin-tools` and `rospkg`.
 ```
