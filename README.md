@@ -28,6 +28,8 @@ You can now develop in Python3 then.
 
 
 ## REFERENCE
-_Python3 in ROS_
-1. https://www.cnblogs.com/h46incon/p/6207145.html
-2. https://github.com/OTL/cozmo_driver#super-hack-to-run-rospy-from-python3
+1. Python3 in ROS
+  1. https://www.cnblogs.com/h46incon/p/6207145.html
+  2. https://github.com/OTL/cozmo_driver#super-hack-to-run-rospy-from-python3
+2. Respeaker Microphone Array
+  1. https://github.com/respeaker
