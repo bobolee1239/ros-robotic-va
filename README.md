@@ -3,7 +3,7 @@ __AUTHOR__: Tsung-Han Brian Lee
 
 ---
 ## Get Started
-Dependencies: `pyusb` <br />
+Dependencies: `pyusb`, `webrtcvad`, `ROS Kinetic`, and `Sphinx` <br />
 If you don't want to access USB device with root permission, you can add a udev `.rules` file to `/etc/udev/rules.d`
 ```
 $ echo 'SUBSYSTEM=="usb", MODE="0666"' | sudo tee -a /etc/udev/rules.d/60-usb.rules
