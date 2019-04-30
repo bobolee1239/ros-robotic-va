@@ -97,7 +97,7 @@ subGoal            = Point(0.0, 0.0, 0.0)
 def sslHandler(firer, direction, polar_angle):
     # user interaction : LED & console
     pixel_ring.set_direction(direction)
-    logger.info('In callback: src @ {:.2f}, @{:.2f}'.format(direction,
+    rospy.loginfo('In callback: src @ {:.2f}, @{:.2f}'.format(direction,
                  polar_angle))
 
     command = Point(roboticVA_position.x,
@@ -108,7 +108,7 @@ def sslHandler(firer, direction, polar_angle):
     if command.z > 180:
          command.z -= 360
     
-    assert (command.z < 180 and command.z > 180), "direction range wrong"
+    rospy.logdebug('command.z : {}'.format(command.z))
 
     # transform from degree to rad
     command.z /= (0.01745329252)
@@ -181,11 +181,11 @@ if __name__ == '__main__':
             #  rospy.spin()
             #  wake up VA with a keyword
             if uca.wakeup('hello amber'):
-                logger.info('Wake up')
+                rospy.loginfo('Wake up')
                 chunks = uca.listen()
                 enhanced = uca.beamforming(chunks)
 
-                logger.info('sending ajax request to AWS-LEX')
+                rospy.loginfo('sending ajax request to AWS-LEX')
                 # sending AJAX request to AWS-LEX
                 response = lex_client.post_content(
                     botName = "RoboticVA",
@@ -205,12 +205,12 @@ if __name__ == '__main__':
                 elif response["dialogState"] == "Failed": isFailed = True
 
                 if DEBUG:
-                    logger.info('  * Playing back response ...')
+                    rospy.loginfo('  * Playing back response ...')
                 content = np.fromstring(response["audioStream"].read(), dtype="<i2")
 
                 # Play enhanced speech back
                 if DEBUG:
-                    logger.info('Playing enhanced speech ...')
+                    rospy.loginfo('Playing enhanced speech ...')
                     playAudio(enhanced / 2**14, 16000)
                     time.sleep(3.0)
 
@@ -218,17 +218,17 @@ if __name__ == '__main__':
                 #   Playing response back to user
                 ##
                 playAudio(content / np.max(content), 16000)
-                logger.info('\n-------------------')
-                logger.info(' [RESPONSE]: ' + response["message"])
+                rospy.loginfo('\n-------------------')
+                rospy.loginfo(' [RESPONSE]: ' + response["message"])
 
                 if isFailed: break
         except KeyboardInterrupt:
-            logger.info('Quit')
+            rospy.loginfo('Quit')
             q.set()
             break
         # not handling other exception
         except Exception as e:
-            logger.warn(e)
+            rospy.logwarn(e)
     uca.close()
 
     if not isFailed:
