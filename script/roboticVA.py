@@ -111,7 +111,7 @@ def sslHandler(firer, direction, polar_angle):
     rospy.logdebug('command.z : {}'.format(command.z))
 
     # transform from degree to rad
-    command.z /= (0.01745329252)
+    command.z *= (0.01745329252)
 
     # Publish command to ROS topic
     pub.publish(command)
@@ -185,6 +185,10 @@ if __name__ == '__main__':
                 chunks = uca.listen()
                 enhanced = uca.beamforming(chunks)
 
+                pub.publish(Point(roboticVA_position.x,
+                                  roboticVA_position.y,
+                                  roboticVA_position.z))
+
                 rospy.loginfo('sending ajax request to AWS-LEX')
                 # sending AJAX request to AWS-LEX
                 response = lex_client.post_content(
@@ -211,8 +215,8 @@ if __name__ == '__main__':
                 # Play enhanced speech back
                 if DEBUG:
                     rospy.loginfo('Playing enhanced speech ...')
-                    playAudio(enhanced / 2**14, 16000)
-                    time.sleep(3.0)
+                    # playAudio(enhanced / 2**14, 16000)
+                    # time.sleep(3.0)
 
                 ##
                 #   Playing response back to user
@@ -241,3 +245,4 @@ if __name__ == '__main__':
         for keys in response["slots"].keys():
             print("  * " + keys + ": " + response["slots"][keys])
         print("\n\n////////// Conversation END! //////////")
+    rospy.spin()

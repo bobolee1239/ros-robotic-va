@@ -166,7 +166,8 @@ void subgoalCallback(const geometry_msgs::Point &msg) {
      **  Handle when close to goal
      **     => in 1 mm
      **/
-    if (distance < 0.06) {
+    // if (distance < 0.1) {
+    if (true) {
         ROS_INFO_STREAM("[NAV] WE ARE CLOSE ENOUGH!");
         //  [TODO] it's just a temp way to control pose
         command.angular.z = pDiff*k_beta;

@@ -5,13 +5,12 @@
     name="mobileBot"
     pkg="ros-robotic-va"
     type="mobileBot"
-    output="screen"
   />
   <!-- robotic va main && microphone array signal processing -->
   <node
     name="roboticVA"
     pkg="ros-robotic-va"
-    type="roboticVA"
+    type="roboticVA.py"
     output="screen"
   />
   <!-- calculate robotic va odometry -->
