@@ -145,6 +145,7 @@ void commandHandler(const geometry_msgs::Twist& recvMsg) {
 
 void timerISR(int signum) {
     //  60.0 / 2pi = 9.549296586
+    //  negative for left wheel just becuz the direction
     leftController.refRPM  = -(car.refV - car.L*car.refW/2.0)
                               * 9.549296586 / car.r;
     rightController.refRPM = (car.refV + car.L*car.refW/2.0)
