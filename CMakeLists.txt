@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(ros_robotic_va)
+project(ros-robotic-va)
 
 add_compile_options(-std=c++11 -lwiringPi -lpthread)
 
