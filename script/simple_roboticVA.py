@@ -104,21 +104,6 @@ def sslHandler(firer, direction, polar_angle):
 
 
 ##
-#   Callback Handler Fcn which will be fired when receive a ROS message
-#   ----------------------------------------------------------------------
-#     GOALS:
-#       1. Update Robot Pose
-#     ARGUEMNTS:
-#       1. recvMsg [nav_msgs::Odometry]
-#   -----------------------------------------------------------------------
-##
-def odometryHandler(loc):
-    # update robotic VA position
-    roboticVA_position = Point(loc.pose.pose.position.x,
-                               loc.pose.pose.position.y,
-                               loc.pose.pose.orientation.z)
-
-##
 #   Playing audio back with specific sampling rate
 #   --------------------------------------------------------------------------
 #     ARGUMENTS:
@@ -138,9 +123,13 @@ if __name__ == '__main__':
 
     ##
     #   Init ROS Node : roboticVA
+    #   Note:
+    #       In ROS, nodes are uniquely named. If two nodes with the same
+    #       node are launched, the previous one is kicked off. The
+    #       anonymous=True flag means that rospy will choose a unique
+    #       name for our node so that multiple listeners can run simultaneously.
     ##
-    rospy.init_node('roboticVA', anonymous=True)
-    rospy.Subscriber(ROBOT_POSE_TOPIC, Odometry, odometryHandler)
+    rospy.init_node('roboticVA', anonymous=False)
 
     ##
     #   Init Uniform Circular Array (UCA) for audio Input
@@ -161,7 +150,7 @@ if __name__ == '__main__':
     #       Robotic VA Routine
     ##
     isFailed = False
-    while not q.is_set():
+    while not (q.is_set() or rospy.is_shutdown()):
         try:
             #  enable to catch ROS topic callback fcn
             #  rospy.spin()
