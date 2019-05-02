@@ -6,6 +6,7 @@
     pkg="ros-robotic-va"
     type="simple_vehicle"
   />
+  
   <!-- robotic va main && microphone array signal processing -->
   <node
     name="simple_roboticVA"
