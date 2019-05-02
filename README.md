@@ -16,12 +16,12 @@ Device Firmware (can be found in github/respeaker)
   * Drivers for Raspberry Pi
 
 To access USB device without root permission, you can add a udev `.rules` file to `/etc/udev/rules.d`
-```
+```bash
 $ echo 'SUBSYSTEM=="usb", MODE="0666"' | sudo tee -a /etc/udev/rules.d/60-usb.rules
 $ sudo udevadm control -R  # then re-plug the usb device
 ```
 To access GPIO pins on Raspberry Pi without root permission on ROS node
-```
+```bash
 $ sudo su
 $ source /opt/ros/kinetic/setup.bash
 $ source /home/pi/catkin_ws/devel/setup.bash
@@ -33,15 +33,15 @@ $ source /home/pi/catkin_ws/devel/setup.bash
 ## Python 3 on ROS
 
 First, you need to install `catkin-tools` and `rospkg`.
-```
+```bash
 $ pip3 install catkin-tools rospkg
 ```
 or
-```
+```bash
 $ python3 -m pip install catkin-tools rospkg
 ```
 Second, invoke Python 3 interpreter at the beginning of Python scripts.
-```
+```python
 1   #!/usr/bin/env python3
 ```
 Congrats! You can develop in Python 3 now.
@@ -65,7 +65,9 @@ Configure `dictionary.txt` and `keyword.txt` in `script/beamforming/assets/pocke
 ## Plugin your own Source Localizatoin or Source Separation Algorithm
 
 simply modify method `beamforming` of `class UCA` in `scripts/beamforming/uca.py`
-```
+```python
+# FILE: scripts/beamforming/uca.py
+
 class UCA(object):
   ...
   def beamforming(self, chunks):
