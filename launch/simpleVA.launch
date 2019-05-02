@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- motor control node -->
+  <node
+    name="simple_vehicle"
+    pkg="ros-robotic-va"
+    type="simple_vehicle"
+  />
+  <!-- robotic va main && microphone array signal processing -->
+  <node
+    name="simple_roboticVA"
+    pkg="ros-robotic-va"
+    type="simple_roboticVA.py"
+    output="screen"
+  />
+</launch>
