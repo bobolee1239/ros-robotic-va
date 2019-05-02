@@ -62,6 +62,24 @@ Configure `dictionary.txt` and `keyword.txt` in `script/beamforming/assets/pocke
 
 ---
 
+## Plugin your own Source Localizatoin or Source Separation Algorithm
+
+simply modify method `beamforming` of `class UCA` in `scripts/beamforming/uca.py`
+```
+class UCA(object):
+  ...
+  def beamforming(self, chunks):
+    ...
+    for chunk in chunks:
+      ##
+      #   IMPLEMENT YOUR ALGORITHM FOLLOWING, GOOD LUCK!
+      ##
+    ...
+  ...
+```
+
+---
+
 ## REFERENCE
 
 __Python3 in ROS__
