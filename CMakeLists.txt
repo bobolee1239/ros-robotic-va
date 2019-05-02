@@ -209,4 +209,4 @@ add_executable(roboticVA_nav src/roboticVA_nav.cpp)
 target_link_libraries(roboticVA_nav ${catkin_LIBRARIES})
 
 add_executable(simple_vehicle src/simple_vehicle.cpp)
-target_link_libraries(simple_vehicle ${catkin_LIBRARIES})
+target_link_libraries(simple_vehicle wiringPi ${catkin_LIBRARIES})

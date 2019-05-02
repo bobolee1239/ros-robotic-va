@@ -66,7 +66,7 @@ COMMAND_TOPIC      = '/cmd_vel'
 #   and correpsonding frequency.
 ##
 loc_history = {}
-pub         = rospy.Publisher(SUBGOAL_TOPIC, Point, queue_size=10)
+pub         = rospy.Publisher(COMMAND_TOPIC, Twist, queue_size=10)
 ##
 #   POINT REPRESENTATION IN THE FOLLOWING
 #   ---------------------------------------------
@@ -100,7 +100,8 @@ def sslHandler(firer, direction, polar_angle):
                  polar_angle))
 
     # [TODO...] maybe down the resolution
-    loc_history[int(direction)] = loc_history.get(int(direction), 0) + 1
+    key = 5*(int(direction) // 5)
+    loc_history[int(key)] = loc_history.get(int(key), 0) + 1
 
 
 ##
@@ -225,20 +226,23 @@ if __name__ == '__main__':
     #   3. sleep awhile
     #   2. publish command
     ##
-    rotation_time = 3
-    rospy.logdebug('[ROBOTIC VA] loc_history len: {}'.format(len(loc_history)))
-    rospy.logdebug('[ROBOTIC VA] loc_history: {}'.format(loc_history))
+    rospy.loginfo('[ROBOTIC VA] loc_history len: {}'.format(len(loc_history)))
+    rospy.loginfo('[ROBOTIC VA]\n loc_history: {}'.format(loc_history))
 
     goal = max(loc_history, key=lambda k: loc_history[k])
+    rospy.loginfo('[ROBOTIC VA] goal: {}'.format(goal))
+
+    rotation_time      = 4
+    
     vel_msg = Twist()
     vel_msg.linear.x  = 0.0
     vel_msg.angular.z = float(goal) * 0.01745329251 / rotation_time
 
-    rospy.logdebug('[ROBOTIC VA] Publishing command with linear: {}, angular {}'.format(vel_msg.linear.x, vel_msg.angular.z))
+    rospy.loginfo('[ROBOTIC VA] Publishing command with linear: {}, angular {}'.format(vel_msg.linear.x, vel_msg.angular.z))
 
     pub.publish(vel_msg)
 
-    sleep(rotation_time)
+    time.sleep(rotation_time)
 
     vel_msg.linear.x  = 0.0
     vel_msg.angular.z = 0.0
