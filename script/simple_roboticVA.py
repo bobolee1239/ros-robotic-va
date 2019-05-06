@@ -148,6 +148,23 @@ if __name__ == '__main__':
     lex_client = boto3.client('lex-runtime', region_name="us-west-2")
 
     ##
+    #   SOCKET IO
+    ##
+    # init socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    # server_addr
+    server_addr = ('140.114.57.81', 7777)
+
+    print('Binding to {0[0]}:{0[1]}'.format(server_addr))
+    sock.bind(server_addr)
+
+    # listening for incoming connection
+    sock.listen(1)
+    # waiting for connectino
+    print('Waiting for connection ...')
+    connection, client_addr = sock.accept()
+    ##
     #       Robotic VA Routine
     ##
     isFailed = False
@@ -233,7 +250,7 @@ if __name__ == '__main__':
     rospy.loginfo('[ROBOTIC VA] goal: {}'.format(goal))
 
     rotation_time      = 4
-    
+
     vel_msg = Twist()
     vel_msg.linear.x  = 0.0
     vel_msg.angular.z = float(goal) * 0.01745329251 / rotation_time

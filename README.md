@@ -9,7 +9,7 @@ __LICENSE__ : MIT
 
 Environment
   * Tested Operating System : `Ubuntu 16` | `Raspian Strench` | `ROS Kinetic`
-  * Python Dependencies: `pyusb`, `webrtcvad`, and `Sphinx`
+  * Python Dependencies: `pyaudio`, `pyusb`, `webrtcvad`, and `Sphinx`
 
 Device Firmware (can be found in github/respeaker)
   * Respeaker 8 mics DFU (Device Firmware Upgrade)
