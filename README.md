@@ -10,6 +10,12 @@ __LICENSE__ : MIT
 Environment
   * Tested Operating System : `Ubuntu 16` | `Raspian Strench` | `ROS Kinetic`
   * Python Dependencies: `pyaudio`, `pyusb`, `webrtcvad`, and `pocketsphinx`
+  
+>  Make sure you have up-to-date version of pip, setuptools and wheel before install python dependencies
+
+```bash
+$ python3 -m pip install --upgrade pip setuptools wheel
+```
 
 Device Firmware (can be found in github/respeaker)
   * Respeaker 8 mics DFU (Device Firmware Upgrade)
