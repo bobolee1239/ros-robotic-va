@@ -249,7 +249,7 @@ if __name__ == '__main__':
     goal = max(loc_history, key=lambda k: loc_history[k])
     rospy.loginfo('[ROBOTIC VA] goal: {}'.format(goal))
 
-    rotation_time      = 4
+    rotation_time      = 3
 
     vel_msg = Twist()
     vel_msg.linear.x  = 0.0
@@ -259,7 +259,7 @@ if __name__ == '__main__':
 
     pub.publish(vel_msg)
 
-    time.sleep(rotation_time)
+    time.sleep(rotation_time + 2)
 
     vel_msg.linear.x  = 0.0
     vel_msg.angular.z = 0.0
