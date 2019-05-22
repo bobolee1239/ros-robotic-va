@@ -5,6 +5,7 @@
     name="simple_vehicle"
     pkg="ros-robotic-va"
     type="simple_vehicle"
+    output="screen"
   />
 
   <!-- robotic va main && microphone array signal processing -->
