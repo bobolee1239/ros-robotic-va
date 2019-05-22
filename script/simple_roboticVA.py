@@ -238,6 +238,10 @@ if __name__ == '__main__':
     vel_msg.linear.x  = 0.0
     vel_msg.angular.z = float(goal) * 0.01745329251 / rotation_time
 
+    if vel_msg.angular.z < 0.2:
+        vel_msg.angular.z = 0.2
+        rotation_time -= 1
+
     rospy.loginfo('[ROBOTIC VA] Publishing command with linear: {}, angular {}'.format(vel_msg.linear.x, vel_msg.angular.z))
 
     pub.publish(vel_msg)
