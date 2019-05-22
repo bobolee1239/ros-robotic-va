@@ -5,12 +5,42 @@ __LICENSE__ : MIT
 
 ---
 
+## Usage:
+In terminal of machine A
+```bash
+# Modify username and ip for your case
+$ ssh pi@192.168.1.181
+$ cd ~/catkin_ws/src/
+$ git clone https://github.com/bobolee1239/ros-robotic-va.git
+$ cd ~/catkin_ws
+$ catkin_make
+$ export ROS_MASTER_URI="http://<machine_A_ip_addr>:11311"
+$ export ROS_IP="<machine_A_ip_addr>"
+$ roslaunch ros-robotic-va simple_mic.launch
+```
+
+In terminal of machine B
+```bash
+# Modify username and ip for your case
+$ ssh pi@192.168.1.104
+$ cd ~/catkin_ws/src/
+$ git clone https://github.com/bobolee1239/ros-robotic-va.git
+$ cd ~/catkin_ws
+$ catkin_make
+$ export ROS_MASTER_URI="http://<machine_A_ip_addr>:11311"
+$ export ROS_IP="<machine_B_ip_addr>"
+$ # you might want to execute in root permission, see following
+$ roslaunch ros-robotic-va simple_motor.launch
+```
+
+---
+
 ## Get Started
 
 Environment
   * Tested Operating System : `Ubuntu 16` | `Raspian Strench` | `ROS Kinetic`
   * Python Dependencies: `pyaudio`, `pyusb`, `webrtcvad`, and `pocketsphinx`
-  
+
 >  Make sure you have up-to-date version of pip, setuptools and wheel before install python dependencies
 
 ```bash
