@@ -136,6 +136,8 @@ int main(int argc, char* argv[]) {
 void commandHandler(const geometry_msgs::Twist& recvMsg) {
     car.refV = recvMsg.linear.x;
     car.refW = recvMsg.angular.z;
+    ROS_DEBUG_STREAM("ref V: " << car.refV << " | "
+                     << "ref W: " << car.refW);
 }
 
 void timerISR(int signum) {
