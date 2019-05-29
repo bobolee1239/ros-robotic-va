@@ -33,6 +33,8 @@
 #
 DEBUG = True
 
+import sys                                   # capture cli info
+import json                                  # parse json data
 from beamforming.uca import UCA, pixel_ring  # audio I/O & beamforming algo
 import logging                               # logger to display information
 import threading                             # thread
@@ -40,6 +42,7 @@ import time                                  # for sleep ...
 import boto3                                 # to send AJAX request to AWS LEX
 import numpy as np                           # science computation
 from scipy import signal                     # resamping signal
+from websocket import create_connection      # websocket communication
 
 import rospy                                 # ROS node
 from geometry_msgs.msg import Twist          # ROS built-in message type
@@ -60,6 +63,13 @@ logger = logging.getLogger('ROBOTIC_VA')            # for verbosity
 ROBOT_POSE_TOPIC   = '/robot_pose'
 SUBGOAL_TOPIC      = '/subgoal_position'
 COMMAND_TOPIC      = '/cmd_vel'
+
+EFFECT_DICT = {
+    'no effect'              : 'none',
+    'cross talk cancelation' : 'xtalk',
+    'virtual surround'       : 'vsurround',
+    'source widening'        : 'widening'
+}
 
 ##
 #   A dictionary to recorde the sound source location
@@ -119,6 +129,9 @@ def playAudio(in_data, fs, effect=None):
 
 
 if __name__ == '__main__':
+    if len(sys.argv) != 3:
+        print('Usage: ./simple_roboticVA.py <audio_server_ip_addr> <audio_server_port_num>')
+        exit(1)
     # setup logger level
     logging.basicConfig(level=logging.INFO)
 
@@ -254,6 +267,26 @@ if __name__ == '__main__':
 
     # empty the history
     loc_history = {}
+
+    # sending audio request to audio server
+    address  = 'ws://' + sys.argv[1] + ':' + sys.argv[2]
+    effect   = EFFECT_DICT[response['slots']['effect']]
+    songName = response['slots']['songName']
+
+    ws      = create_connection(address)
+    toSend  = json.dumps({
+        'effect'   : effect,
+        'songName' : songName
+    })
+
+    logger.info('Sending : ' + toSend)
+    ws.send(toSend)
+    logger.info('Receiving ...')
+    result = ws.recv()
+    logger.info('Received : ' + result)
+
+    ws.close()
+
 
     # hang the process
     rospy.spin()

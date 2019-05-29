@@ -15,5 +15,6 @@
     pkg="ros-robotic-va"
     type="simple_roboticVA.py"
     output="screen"
+    args="192.168.1.115 8888"
   />
 </launch>
