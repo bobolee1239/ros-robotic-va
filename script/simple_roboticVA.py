@@ -269,7 +269,7 @@ if __name__ == '__main__':
     loc_history = {}
 
     # sending audio request to audio server
-    address  = 'ws://' + sys.argv[1] + ':' + sys.argv[2]
+    address  = 'ws://192.168.1.115:8888'
     effect   = EFFECT_DICT[response['slots']['effect']]
     songName = response['slots']['songName']
 
