@@ -129,9 +129,9 @@ def playAudio(in_data, fs, effect=None):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        print('Usage: ./simple_roboticVA.py <audio_server_ip_addr> <audio_server_port_num>')
-        exit(1)
+    # if len(sys.argv) != 3:
+    #     print('Usage: ./simple_roboticVA.py <audio_server_ip_addr> <audio_server_port_num>')
+    #     exit(1)
     # setup logger level
     logging.basicConfig(level=logging.INFO)
 
