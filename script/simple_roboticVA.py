@@ -139,14 +139,16 @@ def audioRequest(data):
     # sending audio request to audio server
     ws = create_connection(AUDIO_SERVER_ADDR)
 
-    rospy.loginfo('Sending : ' + toSend)
-    ws.send(json.dumps(data))
+    toSend = json.dumps(data)
+    if 'content' not in data:
+        rospy.loginfo('Sending : ' + toSend)
+    ws.send(toSend)
 
     rospy.loginfo('Receiving ...')
     result = ws.recv()
     rospy.loginfo('Received : ' + result)
 
-    if json.loads(results)['code'] != 201:
+    if json.loads(result)['code'] != 201:
         raise NotImplementedError('Not received 201 code')
 
     ws.close()
@@ -234,9 +236,9 @@ if __name__ == '__main__':
                 # playAudio(content / np.max(content), 16000)
                 rospy.loginfo('Sending enhanced speech to Audio Server ...')
                 audioRequest({
-                    'effect' : 'none',
-                    'speech' : (content / np.max(content)).tolist(),
-                    'fs'     : 16000
+                    'effect'  : 'none',
+                    'content' : (content / np.max(content)).tolist(),
+                    'fs'      : 16000
                 })
                 rospy.loginfo('\n-------------------')
                 rospy.loginfo(' [RESPONSE]: ' + response["message"])
