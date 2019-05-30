@@ -31,7 +31,8 @@
 ##  IN THE SOFTWARE.
 ##  ---------------------------------------------------------------------------
 #
-DEBUG = True
+DEBUG              = True
+AUDIO_SERVER_ADDR  = 'ws://192.168.1.115:8888'
 
 import sys                                   # capture cli info
 import json                                  # parse json data
@@ -127,6 +128,30 @@ def playAudio(in_data, fs, effect=None):
         sd.play(in_data, fs)
     # [TODO] rendering binaural audio || publish to ROS topic
 
+##
+#   Sending Audio Request to Audio Server
+#   --------------------------------------------------------------------------
+#     ARGUMENTS:
+#       1. data [dictionary] : json-like data
+#   --------------------------------------------------------------------------
+##
+def audioRequest(data):
+    # sending audio request to audio server
+    ws = create_connection(AUDIO_SERVER_ADDR)
+
+    rospy.loginfo('Sending : ' + toSend)
+    ws.send(json.dumps(data))
+
+    rospy.loginfo('Receiving ...')
+    result = ws.recv()
+    rospy.loginfo('Received : ' + result)
+
+    if json.loads(results)['code'] != 201:
+        raise NotImplementedError('Not received 201 code')
+
+    ws.close()
+
+
 
 if __name__ == '__main__':
     # if len(sys.argv) != 3:
@@ -199,14 +224,20 @@ if __name__ == '__main__':
 
                 # Play enhanced speech back
                 if DEBUG:
-                    rospy.loginfo('Playing enhanced speech ...')
+                    rospy.logdebug('Playing enhanced speech ...')
                     # playAudio(enhanced / 2**14, 16000)
                     # time.sleep(3.0)
 
                 ##
-                #   Playing response back to user
+                #   Requesting Audio server to response back to user
                 ##
-                playAudio(content / np.max(content), 16000)
+                # playAudio(content / np.max(content), 16000)
+                rospy.loginfo('Sending enhanced speech to Audio Server ...')
+                audioRequest({
+                    'effect' : 'none',
+                    'speech' : (content / np.max(content)).tolist(),
+                    'fs'     : 16000
+                })
                 rospy.loginfo('\n-------------------')
                 rospy.loginfo(' [RESPONSE]: ' + response["message"])
 
@@ -269,23 +300,12 @@ if __name__ == '__main__':
     loc_history = {}
 
     # sending audio request to audio server
-    address  = 'ws://192.168.1.115:8888'
     effect   = EFFECT_DICT[response['slots']['effect']]
     songName = response['slots']['songName']
-
-    ws      = create_connection(address)
-    toSend  = json.dumps({
+    audioRequest({
         'effect'   : effect,
         'songName' : songName
     })
-
-    logger.info('Sending : ' + toSend)
-    ws.send(toSend)
-    logger.info('Receiving ...')
-    result = ws.recv()
-    logger.info('Received : ' + result)
-
-    ws.close()
 
 
     # hang the process
