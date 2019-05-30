@@ -6,6 +6,18 @@ __LICENSE__ : MIT
 ---
 
 ## Usage:
+
+In terminal of Audio Server Machine
+```bash
+# Modify username and ip for your case
+$ git clone https://github.com/bobolee1239/ros-robotic-va.git
+$ cd ros-robotic-va/script
+$ chmod +x audio_server.py
+$ ./audio_server.py <audio_server_ip_addr> <audio_server_port_num>
+# or
+$ python ./audio_server.py <audio_server_ip_addr> <audio_server_port_num>
+```
+
 In terminal of machine A
 ```bash
 # Modify username and ip for your case
@@ -39,7 +51,7 @@ $ roslaunch ros-robotic-va simple_motor.launch
 
 Environment
   * Tested Operating System : `Ubuntu 16` | `Raspian Strench` | `ROS Kinetic`
-  * Python Dependencies: `pyaudio`, `pyusb`, `webrtcvad`, and `pocketsphinx`
+  * Python Dependencies: `SimpleWebSocketServer`, `websocket-client`, `pyaudio`, `pyusb`, `webrtcvad`, and `pocketsphinx`
 
 >  Make sure you have up-to-date version of pip, setuptools and wheel before install python dependencies
 
