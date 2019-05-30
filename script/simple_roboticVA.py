@@ -33,7 +33,7 @@
 #
 DEBUG              = True
 AUDIO_SERVER_ADDR  = 'ws://192.168.1.115:8888'
-
+# ---
 import sys                                   # capture cli info
 import json                                  # parse json data
 from beamforming.uca import UCA, pixel_ring  # audio I/O & beamforming algo
