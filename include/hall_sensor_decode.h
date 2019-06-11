@@ -10,8 +10,8 @@
 //  #include <iostream>  //  DEBUG
 
 #define LEFT_HALL_A     0           //  BCM 17 : WiringPi  0
-#define LEFT_HALL_B     2           //  BCM 27 : WiringPi  2
-#define RIGHT_HALL_A    21          //  BCM  5 : WiringPi 21
+#define LEFT_HALL_B     3           //  BCM 27 : WiringPi  2
+#define RIGHT_HALL_A    22          //  BCM  5 : WiringPi 21
 #define RIGHT_HALL_B    30          //  BCM  0 : WiringPi 30
 
 /********************************************************
