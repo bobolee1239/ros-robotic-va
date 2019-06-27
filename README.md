@@ -28,7 +28,7 @@ $ cd ~/catkin_ws
 $ catkin_make
 $ export ROS_MASTER_URI="http://<machine_A_ip_addr>:11311"
 $ export ROS_IP="<machine_A_ip_addr>"
-$ roslaunch ros-robotic-va simple_mic.launch
+$ roslaunch ros-robotic-va simpleVA_mic.launch
 ```
 
 In terminal of machine B
@@ -42,7 +42,7 @@ $ catkin_make
 $ export ROS_MASTER_URI="http://<machine_A_ip_addr>:11311"
 $ export ROS_IP="<machine_B_ip_addr>"
 $ # you might want to execute in root permission, see following
-$ roslaunch ros-robotic-va simple_motor.launch
+$ roslaunch ros-robotic-va simpleVA_motor.launch
 ```
 
 ---
